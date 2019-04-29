@@ -1,0 +1,10 @@
+{
+  "name": "admon-proy",
+  "version": "0.1.0",
+  "description": "Proyecto de administración de proyectos",
+  "main": "index.js",
+  "repository": "https://github.com/ggzor/AdministracionProyectos.git",
+  "author": "ggzor <30713864+ggzor@users.noreply.github.com>",
+  "license": "MIT",
+  "private": true
+}
