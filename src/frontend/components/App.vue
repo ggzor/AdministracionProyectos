@@ -1,7 +1,9 @@
 <template lang="pug">
-  main
-    MenuAlumno
-    MenuProfesor
+  .cubierta
+    main
+      MenuAlumno
+      MenuProfesor
+    img.logo(src="../resources/buap.png" alt="Logo de la BUAP.")
 </template>
 
 <script>
@@ -24,11 +26,28 @@ html, body {
 }
 
 main {
+  grid-area: center;
+
   display: grid;
   grid-template-columns: repeat(2, 50%);
   grid-template-rows: 100vh;
 
   font-family: sans-serif;
+}
+
+.cubierta {
+  display: grid;
+  grid-template-areas: 'center';
+}
+
+$medidaLogo: 64px;
+
+.logo {
+  grid-area: center;
+
+  width: $medidaLogo;
+  height: $medidaLogo;
+  margin: 1em 2em;
 }
 
 @media all and (max-width: 960px) {
