@@ -1,18 +1,29 @@
 <template lang="pug">
-  .profesor
+  .profesor#profesor
     .interfaz
-      h1 Profesor
+      Fondo(tipo="profesor", :esObscuro="true")
+      
+    Navegacion(
+      titulo="Soy alumno", 
+      href="#alumno", 
+      icono="fa-chevron-up"
+      :esObscuro="false")
 </template>
 
 <script>
-export default {
+import Fondo from './Fondo.vue'
+import Navegacion from './Navegacion.vue'
 
+export default {
+  components: { Fondo, Navegacion }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "../resources/style/colors";
+
 .profesor {
-  background: #00395E;
+  background: $dark;
   color: whitesmoke;
   transition: box-shadow 400ms;
 
