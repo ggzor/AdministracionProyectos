@@ -7,9 +7,16 @@ app.get('/', (_, res) => res.sendFile(path.join(__dirname, '../../dist/index.htm
 app.get('/horario', (_, res) => res.sendFile(path.join(__dirname, '../../dist/horario.html')))
 app.get('/editar', (_, res) => res.sendFile(path.join(__dirname, '../../dist/editar.html')))
 
+const buscarUsuario = nombre => {
+  if (nombre.startsWith('O'))
+    return [{ id: 1, nombre: 'Omar Cortés Ortega' }]
+  else
+    return []
+}
+
 app.get('/v1/buscar', (req, res) => {
-  if (req.query.nombre.startsWith('O'))
-    res.send([{ id: 1, nombre: 'Omar Cortés Ortega' }])
+  if (req.query.nombre)
+    res.send(buscarUsuario(req.query.nombre))
   else
     res.send([])
 })
