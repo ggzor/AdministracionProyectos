@@ -6,16 +6,20 @@
         .interaccion
           h3 Buscar el horario de un profesor
           input.uk-input.entrada(
+            v-model="nombre",
             type="text", placeholder="Nombre del profesor",
             @focus="mostrarResultados = true", @blur="ocultarResultados")
         .cargador.lds-ellipsis(v-if="cargandoResultados")
           div 
           div
           div
-        .mensajeError(v-if="hayError") 
-          div No hay profesores que cumplan <br> con el criterio de búsqueda
-        .tarjeta(v-if="mostrarResultados")
-          Resultado(@click="elegirProfesor('XD')", :profesor="{ nombre: 'Omar Cortés Ortega' }")
+        .mensajeError(v-if="mensajeError") 
+          div {{ mensajeError }}
+        .tarjeta(v-if="mostrarResultados && nombre.trim().length > 0")
+          Resultado(v-for="profesor in resultados", 
+            @click="elegirProfesor(profesor)",
+            :key="profesor.nombre",
+            :profesor="profesor")
     Navegacion(
       titulo="Soy profesor", 
       href="#profesor",
@@ -28,23 +32,78 @@ import Fondo from './Fondo.vue'
 import Navegacion from './Navegacion.vue'
 import Resultado from './Resultado'
 
+import { from, Subject } from 'rxjs'
+import { debounceTime, switchMap, tap, filter } from 'rxjs/operators'
+import axios from 'axios'
+
 export default { 
   components: { Fondo, Navegacion, Resultado },
   data() {
     return {
+      nombre: '',
       cargandoResultados: false,
       mostrarResultados: false,
-      hayError: false
+      mensajeExcepcion: '',
+      hayError: false,
+      resultados: [
+        { id: 0, nombre: 'Omar Cortés Ortega' }
+      ]
+    }
+  },
+  computed: {
+    mensajeError() {
+      if (this.hayError) {
+        return this.mensajeExcepcion
+      } else {
+        return ''
+      }
     }
   },
   methods: {
     elegirProfesor(profesor) {
-      console.log('Elegido', profesor)
+      window.location.href = `${window.location.origin}/horario?id=${profesor.id}`
       this.mostrarResultados = false
     },
     ocultarResultados() {
       setTimeout(() => this.mostrarResultados = false, 200)
     }
+  },
+  watch: {
+    nombre(valor) {
+      this.nombre$.next(valor)
+
+      if (valor.trim().length == 0) {
+        this.resultados = []
+        this.hayError = false
+      }
+    }
+  },
+  mounted() {
+    this.nombre$ = new Subject()
+
+    this.subscription = this.nombre$.pipe(
+      filter(s => s.trim().length > 0),
+      debounceTime(500),
+      tap(() => this.cargandoResultados = true),
+      switchMap(valor => from(axios.get(`/v1/buscar?nombre=${valor.replace(' ', '$20')}`)))
+    ).subscribe(
+      resultado => {
+        this.resultados = resultado.data
+        this.hayError = false
+        this.cargandoResultados = false
+
+        if (this.resultados.length == 0) {
+          this.hayError = true
+          this.mensajeExcepcion = 'No hay profesores con ese nombre'
+        }
+      },
+      err => {
+        this.resultados = []
+        this.hayError = true
+        this.mensajeExcepcion = 'Ocurrió un error al procesar la solicitud.'
+        this.cargandoResultados = false
+      }
+    )
   }
 }
 </script>

@@ -4,9 +4,16 @@
       Fondo(tipo="profesor", :esObscuro="true")
       .inicio
         h3 Iniciar sesión como profesor
-        input.uk-input.entrada(type="text", placeholder="Usuario")
-        input.uk-input.entrada(type="password", placeholder="Contraseña")
-        button.uk-button.boton Ingresar
+        input.uk-input.entrada(v-model="usuario", type="text", placeholder="Usuario")
+        input.uk-input.entrada(v-model="clave", type="password", placeholder="Contraseña")
+        button.uk-button.boton(:disabled="!puedeIngresar", @click="ingresar")
+          div Ingresar
+    .cargador.lds-ellipsis(v-if="cargando")
+      div
+      div
+      div
+    .mensajeError(v-if="hayError") 
+      div {{ mensajeError }}
 
     Navegacion(
       titulo="Soy alumno", 
@@ -18,9 +25,46 @@
 <script>
 import Fondo from './Fondo.vue'
 import Navegacion from './Navegacion.vue'
+import axios from 'axios';
 
 export default {
-  components: { Fondo, Navegacion }
+  components: { Fondo, Navegacion },
+  data() {
+    return {
+      usuario: '',
+      clave: '',
+      cargando: false,
+      hayError: false,
+      mensajeError: 'La contraseña no es válida.'
+    }
+  },
+  computed: {
+    puedeIngresar() {
+      return this.usuario.trim().length > 0 && this.clave.trim().length > 0
+    }
+  },
+  methods: {
+    ingresar() {
+      this.cargando = true
+      this.hayError = false
+
+      axios.get(`/v1/autenticar?usuario=${this.usuario.replace(' ', '%20')}&clave=${this.clave.replace(' ', '%20')}`)
+        .then(res => {
+          if (res.data.valido) {
+            window.location.href = `${window.location.origin}/editar?token=${res.data.token}`
+          } else {
+            this.cargando = false
+            this.hayError = true
+            this.mensajeError = res.data.error
+          }
+        })
+        .catch(() => {
+          this.cargando = false
+          this.hayError = true
+          this.mensajeError = 'Error al procesar solicitud'
+        })
+    }
+  }
 }
 </script>
 
@@ -81,16 +125,42 @@ export default {
   background-color: white;
   color: $dark;
 
-  &:hover {
+  &:hover(:not(:disabled)) {
     background-color: rgba($color: white, $alpha: 0.8);
   }
 
   &:active {
     background-color: white;
   }
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
 .profesor:hover {
   box-shadow: -10px 0 6px -4px rgba(0, 0, 0, 0.5);
+}
+
+.cargador {
+  grid-area: centro;
+  align-self: flex-end;
+  justify-self: center;
+  margin-bottom: 22vh;
+
+  div {
+    background: white;
+  }
+}
+
+.mensajeError {
+  grid-area: centro;
+  align-self: flex-end;
+  justify-self: center;
+  margin-bottom: 28vh;
+  text-align: center;
+
+  color: rgb(255, 83, 80);
+  font-weight: bold;
 }
 </style>
