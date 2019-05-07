@@ -8,6 +8,12 @@
           input.uk-input.entrada(
             type="text", placeholder="Nombre del profesor",
             @focus="mostrarResultados = true", @blur="ocultarResultados")
+        .cargador.lds-ellipsis(v-if="cargandoResultados")
+          div 
+          div
+          div
+        .mensajeError(v-if="hayError") 
+          div No hay profesores que cumplan <br> con el criterio de búsqueda
         .tarjeta(v-if="mostrarResultados")
           Resultado(@click="elegirProfesor('XD')", :profesor="{ nombre: 'Omar Cortés Ortega' }")
     Navegacion(
@@ -26,7 +32,9 @@ export default {
   components: { Fondo, Navegacion, Resultado },
   data() {
     return {
-      mostrarResultados: false
+      cargandoResultados: false,
+      mostrarResultados: false,
+      hayError: false
     }
   },
   methods: {
@@ -69,6 +77,7 @@ h3 {
   display: grid;
   align-self: stretch; 
 
+  grid-template-columns: 100%;
   grid-template-rows: 40% auto auto 1fr;
 }
 
@@ -86,6 +95,7 @@ $anchoMaximo: 350px;
 
 .tarjeta {
   z-index: 1;
+  grid-column: 1;
   grid-row: 3;
   width: 60vw;
   max-width: $anchoMaximo;
@@ -109,4 +119,25 @@ $anchoMaximo: 350px;
 .alumno:hover {
   box-shadow: 10px 0 10px -4px rgba(0, 0, 0, 0.4);
 }
+
+.cargador {
+  grid-column: 1;
+  grid-row: 3;
+  justify-self: center;
+  
+  div {
+    background: $dark;
+  }
+}
+
+.mensajeError {
+  grid-column: 1;
+  grid-row: 3;
+  justify-self: center;
+  margin-top: 1em;
+  text-align: center;
+
+  color: $colorError;
+}
+
 </style>
