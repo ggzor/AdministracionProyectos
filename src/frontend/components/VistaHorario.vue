@@ -98,7 +98,7 @@ export default {
            + `background-color: ${actividad.color} !important;`
     },
     colorParaActividad(actividad) {
-      const colores = ['#EF5350', '#42A5F5', '#5C6BC0', '#66BB6A', '#FFA726', '']
+      const colores = ['#EF5350', '#42A5F5', '#5C6BC0', '#66BB6A', '#FFA726', '#78909C', '#8D6E63', '#FF5722']
 
       return colores[this.actividadesDistintasOrdenadas.indexOf(actividad)]
     }
