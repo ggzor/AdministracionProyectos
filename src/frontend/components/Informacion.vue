@@ -1,5 +1,5 @@
 <template lang="pug">
-  .informacion(:class="{ esObscura }")
+  .informacion(:class="{ esObscura, siempreVisible }")
     a(href="#") Ayuda
     a(href="#") Contacto
     a(href="#") Términos
@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  props: { esObscura: Boolean }
+  props: { esObscura: Boolean, siempreVisible: { type: Boolean, default: false } }
 }
 </script>
 
@@ -47,6 +47,16 @@ export default {
   .informacion {
     margin: 1em;
     visibility: visible;
+  }
+}
+
+.siempreVisible {
+  visibility: visible;
+}
+
+@media print {
+  .informacion {
+    visibility: hidden;
   }
 }
 </style>

@@ -19,7 +19,6 @@ const validarUsuario = (usuario, clave) => {
 }
 
 app.get('/v1/autenticar', (req, res) => {
-  console.log(req.query)
   if (req.query.usuario && req.query.clave) {
     if (validarUsuario(req.query.usuario, req.query.clave)) {
       const token = Math.floor(Math.random() * 10000)

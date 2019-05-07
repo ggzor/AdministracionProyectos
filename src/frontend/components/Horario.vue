@@ -1,12 +1,33 @@
 <template lang="pug">
-  div Ardilla gana {{ id }}
+  main.area
+    .encabezado
+      img.logo(src="../resources/buap.png" alt="Logo de la BUAP.")
+      h1 Horarios
+    .horario
+      DatosProfesor(:profesor="profesor")
+      VistaHorario(:horario="horario")
+    Informacion(:siempreVisible="true")
 </template>
 
 <script>
+import DatosProfesor from './DatosProfesor'
+import Informacion from './Informacion.vue'
+import VistaHorario from './VistaHorario.vue'
+
 export default {
+  components: { DatosProfesor, Informacion, VistaHorario },
   data() {
     return {
-      id: undefined
+      id: undefined,
+      profesor: { id: 3, nombre: 'Omar Cortés Ortega' },
+      horario: [
+        { dia: 1, inicio: 8, fin: 9, nombre: 'Estructuras de datos' },
+        { dia: 2, inicio: 9, fin: 11, nombre: 'Estructuras de datos' },
+        { dia: 4, inicio: 9, fin: 11, nombre: 'Estructuras de datos' },
+        { dia: 1, inicio: 7, fin: 8, nombre: 'Calculo' },
+        { dia: 3, inicio: 7, fin: 9, nombre: 'Calculo' },
+        { dia: 5, inicio: 7, fin: 9, nombre: 'Calculo' },
+      ]
     }
   },
   mounted() {
@@ -22,5 +43,70 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../resources/style/style";
+
+* {
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+$medidaLogo: 64px;
+
+.encabezado {
+  align-self: flex-start;
+  justify-self: flex-start;
+
+  display: flex;
+  align-items: center;
+
+  color: $dark;
+
+  h1 {
+    color-adjust: exact;
+    color: $dark !important;
+    font-weight: bold;
+    margin: 0;
+  }
+}
+
+.logo {
+  width: $medidaLogo;
+  height: $medidaLogo;
+  margin: 1em 2em;
+}
+
+@media all and (max-width: 960px) {
+  .logo {
+    margin: 1em;
+  }
+}
+
+.area {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 100%;
+  grid-template-areas: 'centro';
+
+  > * {
+    grid-area: centro;
+  }
+}
+
+main {
+  height: 100vh;
+}
+
+.horario {
+  margin: 15vh 2em 0 2em;
+  display: flex;
+  flex-direction: column;
+}
 
 </style>
