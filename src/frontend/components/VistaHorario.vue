@@ -9,12 +9,14 @@
       .hora(v-for="(hora, indice) in horas", :style="computarEstiloHora(indice)")
         div {{ hora }}
       .actividad(v-for="actividad in actividades", :style="computarEstiloActividad(actividad)")
-        div {{ actividad.actividad }} 
+        div {{ actividad.actividad }}
+        button(v-if="editable", @click="$emit('eliminar', actividad.original)")
+          i.fas.fa-trash
 </template>
 
 <script>
 export default {
-  props: { horario: Array },
+  props: { editable: { type: Boolean, default: false }, horario: Array },
   computed: {
     horaMinima() {
       return this.horario.map(h => h.inicio).reduce((x, y) => Math.min(x, y))
@@ -40,11 +42,6 @@ export default {
       return lista
     },
     actividades() {
-      const l =  [
-        { actividad: 'Estructuras de datos', color: '#F44336', dia: 3, inicio: 0, fin: 1 },
-        { actividad: 'Cálculo', color: '#4CAF50', dia: 5, inicio: 1, fin: 3 }
-      ]
-
       const resultado = []
 
       for (let actividad of this.horario) {
@@ -53,7 +50,8 @@ export default {
           dia: actividad.dia, 
           inicio: actividad.inicio - this.horaMinima,
           fin: actividad.fin - this.horaMinima,
-          color: this.colorParaActividad(actividad.nombre)
+          color: this.colorParaActividad(actividad.nombre),
+          original: actividad
         })
       }
 
@@ -86,7 +84,7 @@ export default {
         resultado.push(nombre)
       }
 
-      return resultado.sort()
+      return resultado
     }
   },
   methods: {
@@ -132,6 +130,9 @@ export default {
 .actividad {
   display: flex;
   flex-direction: column;
+
+  align-items: center;
+
   text-align: center;
   padding: 0.5em;
 
@@ -141,9 +142,22 @@ export default {
   color-adjust: exact !important;
 
   div {
+    grid-area: centro;
     -webkit-print-color-adjust: exact !important; 
     color-adjust: exact !important;
     color: white !important;
+  }
+
+  button {
+    grid-area: centro;
+    align-self: center;
+    border: none;
+    background: transparent;
+    color: white;
+
+    &:hover {
+      opacity: 0.5;
+    }
   }
 }
 

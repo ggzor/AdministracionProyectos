@@ -5,7 +5,7 @@
       h1 Horarios
     .horario(v-if="cargado")
       DatosProfesor(:profesor="profesor")
-      VistaHorario(:horario="profesor.horario")
+      VistaHorario(:horario="profesor.horario", :editable="false", @eliminar="eliminar")
     Informacion(:siempreVisible="true")
 </template>
 
@@ -24,6 +24,16 @@ export default {
       profesor: null
     }
   },
+  methods: {
+    eliminar (actividad) {
+      const indice = this.profesor.horario.findIndex(
+        a => a.nombre === actividad.nombre && a.dia === actividad.dia && a.inicio === actividad.inicio && a.fin === actividad.fin
+      )
+
+      if (indice !== -1)
+        this.profesor.horario.splice(indice, 1)
+    }
+  },
   mounted() {
     const match = window.location.href.match(/\?id=(\d+)/)
 
@@ -37,7 +47,7 @@ export default {
         })
         .catch(err => { console.error('No se pudo cargar al profesor') })
     }
-  }
+  },
 }
 </script>
 
