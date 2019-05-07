@@ -1,12 +1,26 @@
 <template lang="pug">
   .resultado(@click="$emit('click')")
-    i.icono.fas.fa-lg(:class="profesor.sexo == 'Masculino' ? 'fa-male' : 'fa-female'")
+    img.imagen(:src="obtenerImagen(profesor)")
     div {{ profesor.nombre }}
 </template>
 
 <script>
 export default {
-  props: { profesor: Object }
+  props: { profesor: Object },
+  methods: {
+    obtenerImagen(profesor) {
+      const procesarNombre = nombre => nombre.toLowerCase()
+        .split(' ')
+        .join('')
+        .replace('á', 'a')
+        .replace('é', 'e')
+        .replace('í', 'i')
+        .replace('ó', 'o')
+        .replace('ú', 'u')
+
+      return profesor.imagen || `img/${procesarNombre(profesor.nombre)}.jpeg`
+    }
+  }
 }
 </script>
 
@@ -17,19 +31,18 @@ export default {
   user-select: none;
 
   display: flex;
-  padding: 1em;
+  align-items: center;
+  padding: 0.5em;
 
   &:hover {
     background-color: #e5e5e5;
   }
 }
 
-.icono {
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center; 
-  margin-right: 0.5em;
+.imagen {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 1em;
 }
 </style>
