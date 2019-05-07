@@ -1,5 +1,5 @@
 <template lang="pug">
-  .logos
+  .logos(:class="{ esObscuro }")
     i.fa-2x(v-for="icono in coleccionIconos", 
       :class="[icono.clase, esObscuro ? 'esObscuro' : '', icono.tipo || 'fas']", 
       :style="computarEstilo(icono)")
@@ -65,6 +65,11 @@ i.esObscuro {
 
 .logos {
   opacity: 0.15;
+
+  &.esObscuro {
+    opacity: 0.08;
+  }
+
   pointer-events: none;
 
   height: 70vh;
