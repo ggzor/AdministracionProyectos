@@ -3,9 +3,9 @@
     .encabezado
       img.logo(src="../resources/buap.png" alt="Logo de la BUAP.")
       h1 Horarios
-    .horario
+    .horario(v-if="cargado")
       DatosProfesor(:profesor="profesor")
-      VistaHorario(:horario="horario")
+      VistaHorario(:horario="profesor.horario")
     Informacion(:siempreVisible="true")
 </template>
 
@@ -14,29 +14,28 @@ import DatosProfesor from './DatosProfesor'
 import Informacion from './Informacion.vue'
 import VistaHorario from './VistaHorario.vue'
 
+import axios from 'axios'
+
 export default {
   components: { DatosProfesor, Informacion, VistaHorario },
   data() {
     return {
-      id: undefined,
-      profesor: { id: 3, nombre: 'Omar Cortés Ortega' },
-      horario: [
-        { dia: 1, inicio: 8, fin: 9, nombre: 'Estructuras de datos' },
-        { dia: 2, inicio: 9, fin: 11, nombre: 'Estructuras de datos' },
-        { dia: 4, inicio: 9, fin: 11, nombre: 'Estructuras de datos' },
-        { dia: 1, inicio: 7, fin: 8, nombre: 'Calculo' },
-        { dia: 3, inicio: 7, fin: 9, nombre: 'Calculo' },
-        { dia: 5, inicio: 7, fin: 9, nombre: 'Calculo' },
-      ]
+      cargado: false,
+      profesor: null
     }
   },
   mounted() {
     const match = window.location.href.match(/\?id=(\d+)/)
 
     if (match) {
-      this.id = match[1]
-    } else {
-      
+      const id = Number(match[1])
+
+      axios.get(`/v1/profesor?id=${id}`)
+        .then(res => {
+          this.profesor = res.data
+          this.cargado = true
+        })
+        .catch(err => { console.error('No se pudo cargar al profesor') })
     }
   }
 }

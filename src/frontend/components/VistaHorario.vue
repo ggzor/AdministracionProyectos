@@ -126,6 +126,7 @@ export default {
   display: flex;
   align-items: center;
   border: 1px solid #e5e5e5;
+  padding: 0.25em;
 }
 
 .actividad {
